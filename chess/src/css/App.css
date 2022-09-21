@@ -1,8 +1,7 @@
 .app {
+  padding: 50px;
   background-color: rgb(170, 155, 136);
   width: 100vw;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
 }

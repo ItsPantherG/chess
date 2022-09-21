@@ -1,8 +1,8 @@
-function dragPiece(event, isMouseDown, offsetX, offsetY) {
+function dragPiece(event, isMouseDown) {
   if (isMouseDown) {
     const piecePos = {
-      top: event.nativeEvent.clientX - offsetX,
-      left: event.nativeEvent.clientY - offsetY,
+      top: event.nativeEvent.clientX - 86,
+      left: event.nativeEvent.clientY - 84,
     };
     return piecePos;
   }

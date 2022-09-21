@@ -6,9 +6,7 @@ const ChessPiece = (props) => {
       className="chess--piece"
       onMouseDown={() => props.isMouseDown(true)}
       onMouseUp={() => props.isMouseDown(false)}
-      onMouseEnter={() => props.isHovering(true)}
-      onMouseLeave={() => props.isHovering(false)}
-      style={props.mousePos}
+      style={props.isDragging ? props.mousePos : { gridArea: props.snapTo }}
     ></div>
   );
 };
