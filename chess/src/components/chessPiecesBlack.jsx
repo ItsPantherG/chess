@@ -1,8 +1,7 @@
 import React from "react";
 import ChessPiece from "./chessPiece";
 
-const ChessPieces = (props) => {
-  console.log(props.piecesBlack[0].type);
+const ChessPiecesBlack = (props) => {
   return props.piecesBlack.map((pieceBlack) => {
     return (
       <ChessPiece
@@ -11,11 +10,11 @@ const ChessPieces = (props) => {
         type={pieceBlack.type}
         mousePos={pieceBlack.pos}
         isMouseDown={props.isMouseDown}
-        isDragging={props.isDragging}
+        isDragging={pieceBlack.isDragging}
         snapTo={pieceBlack.square}
       ></ChessPiece>
     );
   });
 };
 
-export default ChessPieces;
+export default ChessPiecesBlack;

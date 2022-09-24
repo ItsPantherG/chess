@@ -5,8 +5,16 @@ const ChessPiece = (props) => {
     <div
       className="chess--piece"
       onMouseDown={(event) => props.isMouseDown(true, props.id, event)}
-      onMouseUp={() => props.isMouseDown(false)}
-      style={props.isDragging ? props.mousePos : { gridArea: props.snapTo }}
+      onMouseUp={(event) => props.isMouseDown(false, props.id, event)}
+      style={
+        props.isDragging
+          ? {
+              position: "absolute",
+              top: props.mousePos.top,
+              left: props.mousePos.left,
+            }
+          : { gridArea: props.snapTo }
+      }
     >
       {props.type}
     </div>
