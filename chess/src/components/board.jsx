@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../css/board.css";
 import dragPiece from "../functions/dnd";
-import ChessPiece from "./chessPiece";
+import ChessPieces from "./chessPieces";
 
 const Board = (props) => {
   const [isDown, setIsDown] = useState(false);
@@ -9,10 +9,20 @@ const Board = (props) => {
     top: 0,
     left: 0,
   });
+  const [draggingPiece, setDragginPiece] = useState();
 
-  function isMouseDown(isDown) {
-    if (isDown === true) {
-      return setIsDown(true);
+  function isMouseDown(isDown, pieceId, event) {
+    setDragginPiece(pieceId);
+    if (isDown !== false) {
+      const tempPos = {
+        left: event.nativeEvent.clientX - 86,
+        top: event.nativeEvent.clientY - 84,
+      };
+      setMousePosition({
+        left: `${tempPos.left}px`,
+        top: `${tempPos.top}px`,
+      });
+      return setIsDown(pieceId);
     }
     return setIsDown(false);
   }
@@ -21,10 +31,10 @@ const Board = (props) => {
     if (dragPiece(event, isDown) !== undefined) {
       const position = dragPiece(event, isDown);
       setMousePosition({
-        left: `${position.top}px`,
-        top: `${position.left}px`,
+        left: `${position.left}px`,
+        top: `${position.top}px`,
       });
-      props.piecePos([position.top, position.left], isDown);
+      props.piecePos([position.left, position.top], isDown, draggingPiece);
     }
   }
   return (
@@ -34,11 +44,13 @@ const Board = (props) => {
         onMouseMove={(event) => mousePos(event)}
         onMouseUp={() => isMouseDown(false)}
       >
-        <ChessPiece
+        <ChessPieces
           mousePos={mousePosition}
           isMouseDown={isMouseDown}
           isDragging={isDown}
           snapTo={props.snapPieceTo}
+          piecesBlack={props.piecesBlack}
+          piecesWhite={props.piecesWhite}
         />
       </div>
     </div>
