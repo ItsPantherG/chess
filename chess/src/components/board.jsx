@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "../css/board.css";
 import dragPiece from "../functions/dnd";
-import ChessPiecesBlack from "./chessPiecesBlack";
-import ChessPiecesWhite from "./chessPiecesWhite";
+import ChessPieces from "./chessPieces";
 
 const Board = (props) => {
   const [isDown, setIsDown] = useState(false);
@@ -12,6 +11,7 @@ const Board = (props) => {
       props.getMovingPiece(pieceId);
       return setIsDown(isDown);
     }
+    props.switchTurn();
     props.isDragging(false);
     props.getMovingPiece(undefined);
     return setIsDown(isDown);
@@ -31,15 +31,7 @@ const Board = (props) => {
         onMouseMove={(event) => mousePos(event)}
         onMouseUp={() => isMouseDown(false)}
       >
-        <ChessPiecesBlack
-          isMouseDown={isMouseDown}
-          piecesBlack={props.piecesBlack}
-          piecesWhite={props.piecesWhite}
-        />
-        {/* <ChessPiecesWhite
-        isMouseDown={isMouseDown}
-        piecesWhite={props.piecesWhite}
-        /> */}
+        <ChessPieces isMouseDown={isMouseDown} pieces={props.pieces} />
       </div>
     </div>
   );

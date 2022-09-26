@@ -1,4 +1,5 @@
 import React from "react";
+import second from "../../src/images/chessPawnB.png";
 
 const ChessPiece = (props) => {
   return (
@@ -12,12 +13,14 @@ const ChessPiece = (props) => {
               position: "absolute",
               top: props.mousePos.top,
               left: props.mousePos.left,
+              backgroundImage: `url(${props.texture})`,
             }
-          : { gridArea: props.snapTo }
+          : {
+              gridArea: props.snapTo,
+              backgroundImage: `url(${props.texture})`,
+            }
       }
-    >
-      {props.type}
-    </div>
+    ></div>
   );
 };
 

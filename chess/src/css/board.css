@@ -24,10 +24,9 @@
 }
 
 .chess--piece {
-  background: rgb(0, 227, 243);
   border-radius: 50%;
-  height: 40px;
-  width: 40px;
+  height: 62.5px;
+  width: 62.5px;
   align-self: center;
   justify-self: center;
   position: relative;
