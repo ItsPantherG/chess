@@ -3,6 +3,7 @@ import "./css/App.css";
 import Board from "./components/board";
 import snapToSquare from "./functions/snapToSquare";
 import imageURLs from "./images/chessPieces";
+import pieceLogic from "./pieceLogic/pieceLogic";
 
 function App() {
   // Pieces states; Used for rendering the pieces and the position of the pieces!
@@ -155,7 +156,7 @@ function App() {
       isDragging: false,
     },
     {
-      id: "BW1",
+      id: "bW1",
       type: "Bishop",
       texture: imageURLs().bishopWhite,
       square: "c1",
@@ -163,7 +164,7 @@ function App() {
       isDragging: false,
     },
     {
-      id: "BW2",
+      id: "bW2",
       type: "Bishop",
       texture: imageURLs().bishopWhite,
       square: "f1",
@@ -273,20 +274,19 @@ function App() {
   // Tempotary states; changes a lot, used for position and snapping to squares!
   const [piecePosition, setPiecePositon] = useState(0);
   const [movingPiece, setMovingPiece] = useState();
+  const [validSquare, setValidSquare] = useState(false);
 
   // State to detemine who's turn it is
   const [turnWhite, setTurnWhite] = useState(true);
 
-  function getMovingPiece(idB) {
+  function getMovingPiece(id) {
     for (let piece of pieces) {
-      if (piece.id === idB) {
+      if (piece.id === id) {
         if (turnWhite && piece.id.includes("W")) {
           setMovingPiece(pieces.indexOf(piece));
-          console.log(idB);
         }
         if (!turnWhite && piece.id.includes("B")) {
           setMovingPiece(pieces.indexOf(piece));
-          console.log(idB);
         }
       }
     }
@@ -316,27 +316,33 @@ function App() {
       };
 
       //Setting piece snapping square
-      piece[movingPiece].square = snapToSquare(piecePosition);
+
+      if (validSquare) {
+        piece[movingPiece].square = snapToSquare(piecePosition);
+      }
     }
 
     setPieces(piece);
 
     setPiecePositon(pos);
-
-    if (isMouseDown) return getSnapSquare();
-  }
-
-  // Getting all the squares so they snap to them once you let go of the piece
-  function getSnapSquare() {
-    if (movingPiece !== undefined) {
-      return (pieces[movingPiece].square = snapToSquare(piecePosition));
-    }
-    return;
   }
 
   function switchTurn() {
     //after a valid move
-    return setTurnWhite(!turnWhite);
+    let piece = pieces;
+    const availableSquares = pieceLogic(
+      pieces,
+      movingPiece,
+      snapToSquare(piecePosition)
+    );
+
+    if (!availableSquares) return;
+    if (availableSquares.includes(snapToSquare(piecePosition)) === true) {
+      piece[movingPiece].square = snapToSquare(piecePosition);
+      setTurnWhite(!turnWhite);
+    }
+
+    setPieces(piece);
   }
 
   return (
