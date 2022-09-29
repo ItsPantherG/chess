@@ -270,6 +270,7 @@ function App() {
       isDragging: false,
     },
   ]);
+  const [capturedPieces, setCapturedPieces] = useState();
 
   // Tempotary states; changes a lot, used for position and snapping to squares!
   const [piecePosition, setPiecePositon] = useState(0);
@@ -328,21 +329,47 @@ function App() {
   }
 
   function switchTurn() {
+    if (!movingPiece) return;
+
     //after a valid move
-    let piece = pieces;
+
+    let setNewPieces = pieces;
     const availableSquares = pieceLogic(
       pieces,
       movingPiece,
       snapToSquare(piecePosition)
     );
 
-    if (!availableSquares) return;
-    if (availableSquares.includes(snapToSquare(piecePosition)) === true) {
-      piece[movingPiece].square = snapToSquare(piecePosition);
+    if (availableSquares === undefined) return;
+    if (availableSquares.includes(snapToSquare(piecePosition))) {
+      setNewPieces[movingPiece].square = snapToSquare(piecePosition);
+
       setTurnWhite(!turnWhite);
     }
+    console.log(setNewPieces);
+    setPieces(setNewPieces);
+  }
 
-    setPieces(piece);
+  function removeCapturedPieces() {
+    const piece = pieces;
+    let piecesLocationB = [];
+    let piecesLocationW = [];
+    let pieceData = pieces[movingPiece];
+
+    for (let p of piece) {
+      if (pieceData.square !== p.square && p.id.includes("W")) {
+        piecesLocationW.push(p.square);
+      }
+      if (pieceData.square !== p.square && p.id.includes("B")) {
+        piecesLocationB.push(p.square);
+      }
+    }
+
+    if (turnWhite && piecesLocationB.includes(snapToSquare(piecePosition))) {
+      const setNewPieces = pieces.filter(
+        (p) => p.square !== snapToSquare(piecePosition)
+      );
+    }
   }
 
   return (
@@ -354,6 +381,7 @@ function App() {
           piecePos={piecePos}
           pieces={pieces}
           switchTurn={switchTurn}
+          handlePieceCapture={removeCapturedPieces}
         />
         <div className="turn">
           {turnWhite ? "It's white's turn" : "It's black's turn"}

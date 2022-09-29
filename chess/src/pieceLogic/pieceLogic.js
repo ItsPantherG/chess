@@ -22,6 +22,8 @@ function pieceLogic(pieces, movingPiece) {
     }
 
     //Pawn Logic
+
+    //Pawn White
     if (
       pieceData.type === "Pawn" &&
       pieceData.id.includes("W") &&
@@ -32,6 +34,7 @@ function pieceLogic(pieces, movingPiece) {
         pieceData.square.split("").splice(1, 1).toString()
       );
 
+      //First move 2 squares
       if (currentRow === 2) {
         availableSquares =
           pieceData.square.split("").splice(0, 1).toString() +
@@ -41,13 +44,30 @@ function pieceLogic(pieces, movingPiece) {
       } else {
         let toRow = currentRow + 1;
 
+        //Every other one square move
         if (!piecesLocationB.includes(`${currentFile}${toRow.toString()}`)) {
           availableSquares =
             pieceData.square.split("").splice(0, 1).toString() + toRow;
         }
       }
+
+      //Pawn diagonal capture
+      const pawnDiagonalMove1 = `${formatSquareFile(
+        formatSquareNum(currentFile) + 1
+      )}${currentRow + 1}`;
+      const pawnDiagonalMove2 = `${formatSquareFile(
+        formatSquareNum(currentFile) - 1
+      )}${currentRow + 1}`;
+
+      if (piecesLocationB.includes(pawnDiagonalMove1)) {
+        availableSquares += pawnDiagonalMove1;
+      }
+      if (piecesLocationB.includes(pawnDiagonalMove2)) {
+        availableSquares += pawnDiagonalMove2;
+      }
     }
 
+    //Pawn black
     if (
       pieceData.type === "Pawn" &&
       pieceData.id.includes("B") &&
@@ -72,6 +92,21 @@ function pieceLogic(pieces, movingPiece) {
           availableSquares =
             pieceData.square.split("").splice(0, 1).toString() + toRow;
         }
+      }
+
+      //Pawn diagonal capture
+      const pawnDiagonalMove1 = `${formatSquareFile(
+        formatSquareNum(currentFile) + 1
+      )}${currentRow - 1}`;
+      const pawnDiagonalMove2 = `${formatSquareFile(
+        formatSquareNum(currentFile) - 1
+      )}${currentRow - 1}`;
+
+      if (piecesLocationW.includes(pawnDiagonalMove1)) {
+        availableSquares += pawnDiagonalMove1;
+      }
+      if (piecesLocationW.includes(pawnDiagonalMove2)) {
+        availableSquares += pawnDiagonalMove2;
       }
     }
 

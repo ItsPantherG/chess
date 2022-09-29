@@ -31,3 +31,8 @@
   justify-self: center;
   position: relative;
 }
+
+.chess--piece:active {
+  z-index: 2;
+  transform: scale(1.15);
+}
