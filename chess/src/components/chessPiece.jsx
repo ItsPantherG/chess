@@ -1,5 +1,4 @@
 import React from "react";
-import second from "../../src/images/chessPawnB.png";
 
 const ChessPiece = (props) => {
   return (
@@ -25,5 +24,3 @@ const ChessPiece = (props) => {
 };
 
 export default ChessPiece;
-
-//props.isDragging ? props.mousePos : { gridArea: props.snapTo }

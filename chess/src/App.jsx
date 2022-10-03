@@ -270,7 +270,7 @@ function App() {
       isDragging: false,
     },
   ]);
-  const [capturedPieces, setCapturedPieces] = useState();
+  const [capturedPieces, setCapturedPieces] = useState([]);
 
   // Tempotary states; changes a lot, used for position and snapping to squares!
   const [piecePosition, setPiecePositon] = useState(0);
@@ -317,7 +317,6 @@ function App() {
       };
 
       //Setting piece snapping square
-
       if (validSquare) {
         piece[movingPiece].square = snapToSquare(piecePosition);
       }
@@ -343,32 +342,65 @@ function App() {
     if (availableSquares === undefined) return;
     if (availableSquares.includes(snapToSquare(piecePosition))) {
       setNewPieces[movingPiece].square = snapToSquare(piecePosition);
-
       setTurnWhite(!turnWhite);
     }
-    console.log(setNewPieces);
     setPieces(setNewPieces);
   }
 
   function removeCapturedPieces() {
-    const piece = pieces;
+    if (!movingPiece) return;
+
+    const availableSquares = pieceLogic(
+      pieces,
+      movingPiece,
+      snapToSquare(piecePosition)
+    );
+
+    let piece = pieces;
     let piecesLocationB = [];
     let piecesLocationW = [];
-    let pieceData = pieces[movingPiece];
 
     for (let p of piece) {
-      if (pieceData.square !== p.square && p.id.includes("W")) {
+      if (p.id.includes("W")) {
         piecesLocationW.push(p.square);
       }
-      if (pieceData.square !== p.square && p.id.includes("B")) {
+      if (p.id.includes("B")) {
         piecesLocationB.push(p.square);
       }
     }
 
-    if (turnWhite && piecesLocationB.includes(snapToSquare(piecePosition))) {
-      const setNewPieces = pieces.filter(
-        (p) => p.square !== snapToSquare(piecePosition)
+    //White capture logic
+    if (
+      turnWhite &&
+      piecesLocationB.includes(snapToSquare(piecePosition)) &&
+      pieces[movingPiece].square === snapToSquare(piecePosition)
+    ) {
+      let pieceToRemove = pieces.filter(
+        (p) => p.square === snapToSquare(piecePosition)
       );
+      pieceToRemove = pieceToRemove.filter((p) => p.id.includes("B"));
+
+      piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
+
+      setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
+      setPieces(piece);
+    }
+
+    //Black capture logic
+    if (
+      !turnWhite &&
+      piecesLocationW.includes(snapToSquare(piecePosition)) &&
+      pieces[movingPiece].square === snapToSquare(piecePosition)
+    ) {
+      let pieceToRemove = pieces.filter(
+        (p) => p.square === snapToSquare(piecePosition)
+      );
+      pieceToRemove = pieceToRemove.filter((p) => p.id.includes("W"));
+
+      piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
+
+      setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
+      setPieces(piece);
     }
   }
 
@@ -382,6 +414,7 @@ function App() {
           pieces={pieces}
           switchTurn={switchTurn}
           handlePieceCapture={removeCapturedPieces}
+          capturedPieces={capturedPieces}
         />
         <div className="turn">
           {turnWhite ? "It's white's turn" : "It's black's turn"}

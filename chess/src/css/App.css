@@ -1,7 +1,7 @@
 .app {
   padding: 50px;
   background-color: rgb(170, 155, 136);
-  width: 100vw;
+  background-attachment: fixed;
   height: 100vh;
   display: flex;
 }
@@ -12,4 +12,21 @@
   top: 10px;
   font-weight: 700;
   color: rgb(48, 48, 48);
+}
+
+.captured--piece {
+  position: relative;
+  left: 500px;
+  margin-bottom: -30px;
+  height: 62.5px;
+  width: 62.5px;
+  transform: scale(0.5);
+}
+
+.captured--piece-black {
+  top: -500px;
+}
+
+.captured--piece-white {
+  top: -200px;
 }

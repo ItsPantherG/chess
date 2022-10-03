@@ -111,6 +111,8 @@ function pieceLogic(pieces, movingPiece) {
     }
 
     //Knight Logic
+
+    //Knight logic White
     if (
       pieceData.type === "Knight" &&
       pieceData.id.includes("W") &&
@@ -132,13 +134,472 @@ function pieceLogic(pieces, movingPiece) {
         { file: currentFileNum - 2, row: currentRow - 1 },
         { file: currentFileNum - 2, row: currentRow + 1 },
         { file: currentFileNum - 1, row: currentRow - 2 },
-        { file: currentFileNum - 1, row: currentRow - 2 },
+        { file: currentFileNum + 1, row: currentRow - 2 },
       ];
 
       for (let square of toSquare) {
-        if (square.file > 0 && square.row > 0) {
+        if (
+          square.file > 0 &&
+          square.file < 9 &&
+          square.row > 0 &&
+          square.row < 9
+        ) {
           availableSquares +=
             formatSquareFile(square.file) + square.row.toString();
+        }
+      }
+    }
+
+    //Knight logic Black
+    if (
+      pieceData.type === "Knight" &&
+      pieceData.id.includes("B") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toSquare = [
+        { file: currentFileNum + 2, row: currentRow - 1 },
+        { file: currentFileNum + 2, row: currentRow + 1 },
+        { file: currentFileNum + 1, row: currentRow + 2 },
+        { file: currentFileNum - 1, row: currentRow + 2 },
+
+        { file: currentFileNum - 2, row: currentRow - 1 },
+        { file: currentFileNum - 2, row: currentRow + 1 },
+        { file: currentFileNum - 1, row: currentRow - 2 },
+        { file: currentFileNum + 1, row: currentRow - 2 },
+      ];
+
+      for (let square of toSquare) {
+        if (
+          square.file > 0 &&
+          square.file < 9 &&
+          square.row > 0 &&
+          square.row < 9
+        ) {
+          availableSquares +=
+            formatSquareFile(square.file) + square.row.toString();
+        }
+      }
+    }
+
+    // Rook Logic
+
+    //White Rook
+    if (
+      pieceData.type === "Rook" &&
+      pieceData.id.includes("W") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toFile = currentFileNum;
+      let toRow = currentRow;
+      let includesBlack = false;
+
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile + 1) + toRow.toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile + 1 < 9
+      ) {
+        toFile += 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile - 1) + toRow.toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile - 1 > 0
+      ) {
+        toFile -= 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile) + (toRow + 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toRow + 1 < 9
+      ) {
+        toRow += 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile) + (toRow - 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toRow - 1 > 0
+      ) {
+        toRow -= 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      if (availableSquares.includes(pieceData.square)) {
+        availableSquares = availableSquares.replace(pieceData.square, "");
+      }
+    }
+
+    //Black Rook
+    if (
+      pieceData.type === "Rook" &&
+      pieceData.id.includes("B") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toFile = currentFileNum;
+      let toRow = currentRow;
+      let includesWhite = false;
+
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile + 1) + toRow.toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile + 1 < 9
+      ) {
+        toFile += 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile - 1) + toRow.toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile - 1 > 0
+      ) {
+        toFile -= 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile) + (toRow + 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toRow + 1 < 9
+      ) {
+        toRow += 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile) + (toRow - 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toRow - 1 > 0
+      ) {
+        toRow -= 1;
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      if (availableSquares.includes(pieceData.square)) {
+        availableSquares = availableSquares.replace(pieceData.square, "");
+      }
+    }
+
+    //Bishop Logic
+
+    //White Bishop
+    if (
+      pieceData.type === "Bishop" &&
+      pieceData.id.includes("W") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toFile = currentFileNum;
+      let toRow = currentRow;
+      let includesBlack = false;
+
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile + 1) + (toRow + 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile + 1 < 9 &&
+        toRow + 1 < 9
+      ) {
+        toFile += 1;
+        toRow += 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile - 1) + (toRow + 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile - 1 > 0 &&
+        toRow + 1 < 9
+      ) {
+        toFile -= 1;
+        toRow += 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile + 1) + (toRow - 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile + 1 < 9 &&
+        toRow - 1 > 0
+      ) {
+        toFile += 1;
+        toRow -= 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesBlack = false;
+      while (
+        piecesLocationW.includes(
+          formatSquareFile(toFile - 1) + (toRow - 1).toString()
+        ) === false &&
+        includesBlack === false &&
+        toFile - 1 > 0 &&
+        toRow - 1 > 0
+      ) {
+        toFile -= 1;
+        toRow -= 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationB.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesBlack = true;
+        }
+      }
+    }
+
+    //Black Bishop
+    if (
+      pieceData.type === "Bishop" &&
+      pieceData.id.includes("B") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toFile = currentFileNum;
+      let toRow = currentRow;
+      let includesWhite = false;
+
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile + 1) + (toRow + 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile + 1 < 9 &&
+        toRow + 1 < 9
+      ) {
+        toFile += 1;
+        toRow += 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile - 1) + (toRow + 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile - 1 > 0 &&
+        toRow + 1 < 9
+      ) {
+        toFile -= 1;
+        toRow += 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile + 1) + (toRow - 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile + 1 < 9 &&
+        toRow - 1 > 0
+      ) {
+        toFile += 1;
+        toRow -= 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
+        }
+      }
+
+      toFile = currentFileNum;
+      toRow = currentRow;
+      includesWhite = false;
+      while (
+        piecesLocationB.includes(
+          formatSquareFile(toFile - 1) + (toRow - 1).toString()
+        ) === false &&
+        includesWhite === false &&
+        toFile - 1 > 0 &&
+        toRow - 1 > 0
+      ) {
+        toFile -= 1;
+        toRow -= 1;
+
+        availableSquares += formatSquareFile(toFile) + toRow.toString();
+
+        if (
+          piecesLocationW.includes(formatSquareFile(toFile) + toRow.toString())
+        ) {
+          includesWhite = true;
         }
       }
     }
