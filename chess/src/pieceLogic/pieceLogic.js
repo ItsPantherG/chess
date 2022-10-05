@@ -79,6 +79,7 @@ function pieceLogic(pieces, movingPiece) {
         pieceData.square.split("").splice(1, 1).toString()
       );
 
+      //First 2 moves
       if (currentRow === 7) {
         availableSquares =
           pieceData.square.split("").splice(0, 1).toString() +
@@ -88,6 +89,7 @@ function pieceLogic(pieces, movingPiece) {
       } else {
         let toRow = currentRow - 1;
 
+        //Every other one square move
         if (!piecesLocationW.includes(`${currentFile}${toRow.toString()}`)) {
           availableSquares =
             pieceData.square.split("").splice(0, 1).toString() + toRow;
@@ -190,11 +192,15 @@ function pieceLogic(pieces, movingPiece) {
 
     // Rook Logic
 
-    //White Rook
+    //White Rook and Queen
+
     if (
-      pieceData.type === "Rook" &&
-      pieceData.id.includes("W") &&
-      pieceData.square
+      (pieceData.type === "Rook" &&
+        pieceData.id.includes("W") &&
+        pieceData.square) ||
+      (pieceData.type === "Queen" &&
+        pieceData.id.includes("W") &&
+        pieceData.square)
     ) {
       let currentFileNum = formatSquareNum(
         pieceData.square.split("").splice(0, 1).toString()
@@ -289,11 +295,14 @@ function pieceLogic(pieces, movingPiece) {
       }
     }
 
-    //Black Rook
+    //Black Rook and Queen
     if (
-      pieceData.type === "Rook" &&
-      pieceData.id.includes("B") &&
-      pieceData.square
+      (pieceData.type === "Rook" &&
+        pieceData.id.includes("B") &&
+        pieceData.square) ||
+      (pieceData.type === "Queen" &&
+        pieceData.id.includes("B") &&
+        pieceData.square)
     ) {
       let currentFileNum = formatSquareNum(
         pieceData.square.split("").splice(0, 1).toString()
@@ -390,11 +399,14 @@ function pieceLogic(pieces, movingPiece) {
 
     //Bishop Logic
 
-    //White Bishop
+    //White Bishop and Queen
     if (
-      pieceData.type === "Bishop" &&
-      pieceData.id.includes("W") &&
-      pieceData.square
+      (pieceData.type === "Bishop" &&
+        pieceData.id.includes("W") &&
+        pieceData.square) ||
+      (pieceData.type === "Queen" &&
+        pieceData.id.includes("W") &&
+        pieceData.square)
     ) {
       let currentFileNum = formatSquareNum(
         pieceData.square.split("").splice(0, 1).toString()
@@ -497,11 +509,14 @@ function pieceLogic(pieces, movingPiece) {
       }
     }
 
-    //Black Bishop
+    //Black Bishop and Queen
     if (
-      pieceData.type === "Bishop" &&
-      pieceData.id.includes("B") &&
-      pieceData.square
+      (pieceData.type === "Bishop" &&
+        pieceData.id.includes("B") &&
+        pieceData.square) ||
+      (pieceData.type === "Queen" &&
+        pieceData.id.includes("B") &&
+        pieceData.square)
     ) {
       let currentFileNum = formatSquareNum(
         pieceData.square.split("").splice(0, 1).toString()
@@ -602,6 +617,110 @@ function pieceLogic(pieces, movingPiece) {
           includesWhite = true;
         }
       }
+    }
+
+    //King Logic
+
+    //White King
+    if (
+      pieceData.type === "King" &&
+      pieceData.id.includes("W") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toSquare = [
+        { toFile: currentFileNum + 1, toRow: currentRow },
+        { toFile: currentFileNum - 1, toRow: currentRow },
+        { toFile: currentFileNum, toRow: currentRow + 1 },
+        { toFile: currentFileNum, toRow: currentRow - 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum + 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum + 1, toRow: currentRow - 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow - 1 },
+      ];
+
+      for (let square of toSquare) {
+        if (
+          square.toFile > 0 &&
+          square.toFile < 9 &&
+          square.toRow > 0 &&
+          square.toRow < 9
+        ) {
+          availableSquares +=
+            formatSquareFile(square.toFile) + square.toRow.toString();
+        }
+      }
+    }
+
+    //Black King
+    if (
+      pieceData.type === "King" &&
+      pieceData.id.includes("B") &&
+      pieceData.square
+    ) {
+      let currentFileNum = formatSquareNum(
+        pieceData.square.split("").splice(0, 1).toString()
+      );
+      let currentRow = parseInt(
+        pieceData.square.split("").splice(1, 1).toString()
+      );
+
+      let toSquare = [
+        { toFile: currentFileNum + 1, toRow: currentRow },
+        { toFile: currentFileNum - 1, toRow: currentRow },
+        { toFile: currentFileNum, toRow: currentRow + 1 },
+        { toFile: currentFileNum, toRow: currentRow - 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum + 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum + 1, toRow: currentRow - 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow + 1 },
+        { toFile: currentFileNum - 1, toRow: currentRow - 1 },
+      ];
+
+      for (let square of toSquare) {
+        if (
+          square.toFile > 0 &&
+          square.toFile < 9 &&
+          square.toRow > 0 &&
+          square.toRow < 9
+        ) {
+          availableSquares +=
+            formatSquareFile(square.toFile) + square.toRow.toString();
+        }
+      }
+    }
+
+    //King in check
+
+    //White in check
+    let whiteKingSquare;
+    for (let piece of pieces) {
+      if (piece.id === "KW1") {
+        whiteKingSquare = piece.square;
+      }
+    }
+
+    if (availableSquares.includes(whiteKingSquare)) {
+      console.log("CHECK");
+    }
+
+    //Black in check
+    let blackKingSquare;
+    for (let piece of pieces) {
+      if (piece.id === "KB1") {
+        blackKingSquare = piece.square;
+      }
+    }
+
+    if (availableSquares.includes(blackKingSquare)) {
+      console.log("CHECK");
     }
 
     if (pieceData.id.includes("W")) {

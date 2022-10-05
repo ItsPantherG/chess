@@ -9,6 +9,7 @@ function App() {
   // Pieces states; Used for rendering the pieces and the position of the pieces!
   const [pieces, setPieces] = useState([
     //Pieces
+    { id: "T4" },
     {
       id: "KB1",
       type: "King",
@@ -280,6 +281,9 @@ function App() {
   // State to detemine who's turn it is
   const [turnWhite, setTurnWhite] = useState(true);
 
+  //Win Screen
+  const [winner, setWinner] = useState();
+
   function getMovingPiece(id) {
     for (let piece of pieces) {
       if (piece.id === id) {
@@ -344,17 +348,12 @@ function App() {
       setNewPieces[movingPiece].square = snapToSquare(piecePosition);
       setTurnWhite(!turnWhite);
     }
+
     setPieces(setNewPieces);
   }
 
   function removeCapturedPieces() {
     if (!movingPiece) return;
-
-    const availableSquares = pieceLogic(
-      pieces,
-      movingPiece,
-      snapToSquare(piecePosition)
-    );
 
     let piece = pieces;
     let piecesLocationB = [];
@@ -382,6 +381,10 @@ function App() {
 
       piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
 
+      if (pieceToRemove[0].id.includes("KB")) {
+        setWinner("White Wins");
+      }
+
       setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
       setPieces(piece);
     }
@@ -398,6 +401,10 @@ function App() {
       pieceToRemove = pieceToRemove.filter((p) => p.id.includes("W"));
 
       piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
+
+      if (pieceToRemove[0].id.includes("KW")) {
+        setWinner("Black Wins");
+      }
 
       setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
       setPieces(piece);
@@ -419,6 +426,7 @@ function App() {
         <div className="turn">
           {turnWhite ? "It's white's turn" : "It's black's turn"}
         </div>
+        {winner === undefined ? "" : <div className="win-screen">{winner}</div>}
       </div>
     </>
   );
