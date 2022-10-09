@@ -277,6 +277,7 @@ function App() {
   const [piecePosition, setPiecePositon] = useState(0);
   const [movingPiece, setMovingPiece] = useState();
   const [validSquare, setValidSquare] = useState(false);
+  const [isInCheck, setIsInCheck] = useState(false);
 
   // State to detemine who's turn it is
   const [turnWhite, setTurnWhite] = useState(true);
@@ -340,8 +341,14 @@ function App() {
     const availableSquares = pieceLogic(
       pieces,
       movingPiece,
-      snapToSquare(piecePosition)
+      isInCheck
+    ).availableSquares;
+
+    setIsInCheck(
+      pieceLogic(pieces, movingPiece, snapToSquare(piecePosition)).isInCheck
     );
+
+    console.log(isInCheck);
 
     if (availableSquares === undefined) return;
     if (availableSquares.includes(snapToSquare(piecePosition))) {
