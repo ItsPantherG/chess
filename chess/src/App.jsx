@@ -272,12 +272,14 @@ function App() {
     },
   ]);
   const [capturedPieces, setCapturedPieces] = useState([]);
+  const [moves, setMoves] = useState([]);
 
   // Tempotary states; changes a lot, used for position and snapping to squares!
   const [piecePosition, setPiecePositon] = useState(0);
   const [movingPiece, setMovingPiece] = useState();
   const [validSquare, setValidSquare] = useState(false);
   const [isInCheck, setIsInCheck] = useState(false);
+  const [isEnPassent, setIsEnPassent] = useState(false);
 
   // State to detemine who's turn it is
   const [turnWhite, setTurnWhite] = useState(true);
@@ -320,11 +322,6 @@ function App() {
         top: `${pos[1]}px`,
         left: `${pos[0]}px`,
       };
-
-      //Setting piece snapping square
-      if (validSquare) {
-        piece[movingPiece].square = snapToSquare(piecePosition);
-      }
     }
 
     setPieces(piece);
@@ -341,21 +338,26 @@ function App() {
     const availableSquares = pieceLogic(
       pieces,
       movingPiece,
-      isInCheck
+      moves,
+      isEnPassent
     ).availableSquares;
-
-    setIsInCheck(
-      pieceLogic(pieces, movingPiece, snapToSquare(piecePosition)).isInCheck
-    );
-
-    console.log(isInCheck);
 
     if (availableSquares === undefined) return;
     if (availableSquares.includes(snapToSquare(piecePosition))) {
+      setValidSquare(true);
       setNewPieces[movingPiece].square = snapToSquare(piecePosition);
+      setMoves([
+        `${pieces[movingPiece].square}${setNewPieces[movingPiece].id.charAt(
+          0
+        )}${snapToSquare(piecePosition)} `,
+        ...moves,
+      ]);
       setTurnWhite(!turnWhite);
+    } else {
+      setValidSquare(false);
     }
 
+    setIsInCheck(pieceLogic(pieces, movingPiece, moves, isEnPassent).isInCheck);
     setPieces(setNewPieces);
   }
 
@@ -365,6 +367,12 @@ function App() {
     let piece = pieces;
     let piecesLocationB = [];
     let piecesLocationW = [];
+    const enPassent = pieceLogic(
+      pieces,
+      movingPiece,
+      moves,
+      isEnPassent
+    ).enPassent;
 
     for (let p of piece) {
       if (p.id.includes("W")) {
@@ -378,12 +386,13 @@ function App() {
     //White capture logic
     if (
       turnWhite &&
-      piecesLocationB.includes(snapToSquare(piecePosition)) &&
-      pieces[movingPiece].square === snapToSquare(piecePosition)
+      pieces[movingPiece].square === snapToSquare(piecePosition) &&
+      piecesLocationB.includes(snapToSquare(piecePosition))
     ) {
       let pieceToRemove = pieces.filter(
         (p) => p.square === snapToSquare(piecePosition)
       );
+
       pieceToRemove = pieceToRemove.filter((p) => p.id.includes("B"));
 
       piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
@@ -416,6 +425,41 @@ function App() {
       setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
       setPieces(piece);
     }
+
+    //en Passent capture
+    setIsEnPassent(enPassent);
+
+    if (
+      turnWhite &&
+      isEnPassent &&
+      pieces[movingPiece].square === snapToSquare(piecePosition) &&
+      piecesLocationB.includes(isEnPassent) &&
+      pieces[movingPiece].square.includes("6") &&
+      isEnPassent.charAt(0) === pieces[movingPiece].square.charAt(0)
+    ) {
+      let pieceToRemove = pieces.filter((p) => p.square === isEnPassent);
+
+      piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
+
+      setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
+      setPieces(piece);
+    }
+
+    if (
+      !turnWhite &&
+      isEnPassent &&
+      pieces[movingPiece].square === snapToSquare(piecePosition) &&
+      piecesLocationW.includes(isEnPassent) &&
+      pieces[movingPiece].square.includes("3") &&
+      isEnPassent.charAt(0) === pieces[movingPiece].square.charAt(0)
+    ) {
+      let pieceToRemove = pieces.filter((p) => p.square === isEnPassent);
+
+      piece = pieces.filter((p) => p.id !== pieceToRemove[0].id);
+
+      setCapturedPieces([...capturedPieces, pieceToRemove[0]]);
+      setPieces(piece);
+    }
   }
 
   return (
@@ -429,11 +473,13 @@ function App() {
           switchTurn={switchTurn}
           handlePieceCapture={removeCapturedPieces}
           capturedPieces={capturedPieces}
+          isInCheck={isInCheck}
         />
         <div className="turn">
           {turnWhite ? "It's white's turn" : "It's black's turn"}
         </div>
         {winner === undefined ? "" : <div className="win-screen">{winner}</div>}
+        <div className="capture--moves">{moves}</div>
       </div>
     </>
   );

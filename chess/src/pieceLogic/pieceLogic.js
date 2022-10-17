@@ -1,7 +1,8 @@
 import formatSquareFile from "../functions/formatSquareFile";
 import formatSquareNum from "../functions/fomatSquareNum";
+import checkLogic from "../pieceLogic/checkLogic";
 
-function pieceLogic(pieces, movingPiece, check) {
+function pieceLogic(pieces, movingPiece, moves, enPassent) {
   if (movingPiece !== undefined) {
     //set is in check
     let isInCheck = false;
@@ -62,6 +63,42 @@ function pieceLogic(pieces, movingPiece, check) {
       if (piecesLocationB.includes(pawnDiagonalMove2)) {
         availableSquares += pawnDiagonalMove2;
       }
+
+      // En passent
+      if (moves[0] !== undefined) {
+        const enPassentMove1 = `${formatSquareFile(
+          formatSquareNum(currentFile) + 1
+        )}${currentRow}`;
+        const enPassentMove2 = `${formatSquareFile(
+          formatSquareNum(currentFile) - 1
+        )}${currentRow}`;
+
+        console.log(currentRow);
+        if (
+          currentRow === 5 &&
+          piecesLocationB.includes(enPassentMove1) &&
+          moves[0].includes(enPassentMove1)
+        ) {
+          availableSquares += pawnDiagonalMove1;
+        }
+
+        if (
+          currentRow === 5 &&
+          piecesLocationB.includes(enPassentMove2) &&
+          moves[0].includes(enPassentMove2)
+        ) {
+          availableSquares += pawnDiagonalMove2;
+        }
+
+        if (enPassent === false) {
+          if (moves[0].includes(enPassentMove1)) {
+            enPassent = pieceData.square;
+          }
+          if (moves[0].includes(enPassentMove2)) {
+            enPassent = pieceData.square;
+          }
+        }
+      }
       return availableSquares;
     }
 
@@ -103,45 +140,46 @@ function pieceLogic(pieces, movingPiece, check) {
       if (piecesLocationW.includes(pawnDiagonalMove2)) {
         availableSquares += pawnDiagonalMove2;
       }
-      return availableSquares;
-    }
 
-    //Knight Logic--------------------------------------------
-    function whiteKnightMove() {
-      let currentFileNum = formatSquareNum(
-        pieceData.square.split("").splice(0, 1).toString()
-      );
-      let currentRow = parseInt(
-        pieceData.square.split("").splice(1, 1).toString()
-      );
+      // En passent
+      if (moves[0] !== undefined) {
+        const enPassentMove1 = `${formatSquareFile(
+          formatSquareNum(currentFile) + 1
+        )}${currentRow}`;
+        const enPassentMove2 = `${formatSquareFile(
+          formatSquareNum(currentFile) - 1
+        )}${currentRow}`;
 
-      let toSquare = [
-        { file: currentFileNum + 2, row: currentRow - 1 },
-        { file: currentFileNum + 2, row: currentRow + 1 },
-        { file: currentFileNum + 1, row: currentRow + 2 },
-        { file: currentFileNum - 1, row: currentRow + 2 },
-
-        { file: currentFileNum - 2, row: currentRow - 1 },
-        { file: currentFileNum - 2, row: currentRow + 1 },
-        { file: currentFileNum - 1, row: currentRow - 2 },
-        { file: currentFileNum + 1, row: currentRow - 2 },
-      ];
-
-      for (let square of toSquare) {
         if (
-          square.file > 0 &&
-          square.file < 9 &&
-          square.row > 0 &&
-          square.row < 9
+          currentRow === 4 &&
+          piecesLocationW.includes(enPassentMove1) &&
+          moves[0].includes(enPassentMove1)
         ) {
-          availableSquares +=
-            formatSquareFile(square.file) + square.row.toString();
+          availableSquares += pawnDiagonalMove1;
+        }
+
+        if (
+          currentRow === 4 &&
+          piecesLocationW.includes(enPassentMove2) &&
+          moves[0].includes(enPassentMove2)
+        ) {
+          availableSquares += pawnDiagonalMove2;
+        }
+
+        if (enPassent === false) {
+          if (moves[0].includes(enPassentMove1)) {
+            enPassent = pieceData.square;
+          }
+          if (moves[0].includes(enPassentMove2)) {
+            enPassent = pieceData.square;
+          }
         }
       }
       return availableSquares;
     }
 
-    function blackKnightMove() {
+    //Knight Logic--------------------------------------------
+    function knightMove() {
       let currentFileNum = formatSquareNum(
         pieceData.square.split("").splice(0, 1).toString()
       );
@@ -598,7 +636,7 @@ function pieceLogic(pieces, movingPiece, check) {
       pieceData.id.includes("W") &&
       pieceData.square
     ) {
-      whiteKnightMove();
+      knightMove();
     }
 
     //Knight logic Black
@@ -607,7 +645,7 @@ function pieceLogic(pieces, movingPiece, check) {
       pieceData.id.includes("B") &&
       pieceData.square
     ) {
-      blackKnightMove();
+      knightMove();
     }
 
     //White Rook and Queen
@@ -736,8 +774,21 @@ function pieceLogic(pieces, movingPiece, check) {
       }
     }
 
-    //King in check--------------------------------------------
+    //=========================making sure you cant capture yourself==========================
+    if (pieceData.id.includes("W")) {
+      for (let square of piecesLocationW) {
+        if (availableSquares.includes(square))
+          availableSquares = availableSquares.replace(square, "");
+      }
+    }
+    if (pieceData.id.includes("B")) {
+      for (let square of piecesLocationB) {
+        if (availableSquares.includes(square))
+          availableSquares = availableSquares.replace(square, "");
+      }
+    }
 
+    //King in check--------------------------------------------
     //White in check
     let whiteKingSquare;
     for (let piece of pieces) {
@@ -754,30 +805,13 @@ function pieceLogic(pieces, movingPiece, check) {
       }
     }
 
-    //=========================making sure you cant capture yourself==========================
-    if (pieceData.id.includes("W")) {
-      for (let square of piecesLocationW) {
-        if (availableSquares.includes(square))
-          availableSquares = availableSquares.replace(square, "");
-      }
-    }
-    if (pieceData.id.includes("B")) {
-      for (let square of piecesLocationB) {
-        if (availableSquares.includes(square))
-          availableSquares = availableSquares.replace(square, "");
-      }
-    }
+    checkLogic(pieces, whiteKingSquare, blackKingSquare);
 
-    //Changing isInCheck, if king is in check
-    if (availableSquares.includes(whiteKingSquare)) {
-      isInCheck = "white";
-    }
-    if (availableSquares.includes(blackKingSquare)) {
-      console.log(availableSquares);
-      isInCheck = "black";
-    }
-
-    return { availableSquares: availableSquares, isInCheck: isInCheck };
+    return {
+      availableSquares: availableSquares,
+      isInCheck: isInCheck,
+      enPassent: enPassent,
+    };
   }
 }
 

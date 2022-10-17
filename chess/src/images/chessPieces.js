@@ -10,6 +10,8 @@ import queenBlack from "../images/chessQueenB.png";
 import queenWhite from "../images/chessQueenW.png";
 import kingBlack from "../images/chessKingB.png";
 import kingWhite from "../images/chessKingW.png";
+import kingBlackCheck from "../images/chessKingBCheck.png";
+import kingWhiteCheck from "../images/chessKingWCheck.png";
 
 const imageRLs = () => {
   return {
@@ -25,6 +27,8 @@ const imageRLs = () => {
     queenWhite: queenWhite,
     kingBlack: kingBlack,
     kingWhite: kingWhite,
+    kingBlackCheck: kingBlackCheck,
+    kingWhiteCheck: kingWhiteCheck,
   };
 };
 

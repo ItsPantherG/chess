@@ -1,10 +1,9 @@
 .chess--board-background {
   background: gray;
-  height: 510px;
+  height: 500px;
 }
 
 .chess--board {
-  border: 5px solid rgb(19, 19, 19);
   background: url(../images/chessBoard.png) no-repeat no-repeat;
   background-attachment: scroll;
   height: 500px;

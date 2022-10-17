@@ -27,18 +27,31 @@ const Board = (props) => {
     }
   }
   return (
-    <div className="chess--board-background">
+    <>
       <div
-        className="chess--board"
-        onMouseMove={(event) => mousePos(event)}
-        onMouseUp={() => isMouseDown(false)}
+        className="chess--board-background"
+        style={
+          props.isInCheck
+            ? { border: "5px solid red" }
+            : { border: "5px solid black" }
+        }
       >
-        <ChessPieces key="P" isMouseDown={isMouseDown} pieces={props.pieces} />
+        <div
+          className="chess--board"
+          onMouseMove={(event) => mousePos(event)}
+          onMouseUp={() => isMouseDown(false)}
+        >
+          <ChessPieces
+            key="P"
+            isMouseDown={isMouseDown}
+            pieces={props.pieces}
+          />
+        </div>
       </div>
       <div>
         <CapturedPieces key="C" capturedPieces={props.capturedPieces} />
       </div>
-    </div>
+    </>
   );
 };
 

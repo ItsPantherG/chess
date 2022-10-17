@@ -14,21 +14,26 @@
   color: rgb(48, 48, 48);
 }
 
+.captured--pieces-wrapper {
+  margin-bottom: 200px;
+  width: 100px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .captured--piece {
-  position: relative;
-  left: 500px;
-  margin-bottom: -30px;
+  margin: -15px;
   height: 62.5px;
   width: 62.5px;
   transform: scale(0.5);
 }
-
 .captured--piece-black {
-  top: -500px;
+  width: 50px;
 }
 
 .captured--piece-white {
-  top: -200px;
+  width: 50px;
 }
 
 .win-screen {
@@ -41,4 +46,9 @@
   font-size: 3em;
   font-weight: 900;
   border-radius: 40%;
+}
+
+.capture--moves {
+  color: rgb(102, 19, 102);
+  font-weight: 900;
 }
