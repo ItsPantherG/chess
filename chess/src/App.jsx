@@ -271,6 +271,7 @@ function App() {
       isDragging: false,
     },
   ]);
+  console.log(imageURLs().bishopBlack);
   const [capturedPieces, setCapturedPieces] = useState([]);
   const [moves, setMoves] = useState([]);
 
